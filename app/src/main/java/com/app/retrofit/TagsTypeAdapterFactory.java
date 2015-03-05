@@ -1,4 +1,4 @@
-package com.app.retrofit.Models;
+package com.app.retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -26,19 +26,19 @@ public class TagsTypeAdapterFactory implements TypeAdapterFactory {
 
             @Override
             public T read(JsonReader jsonReader) throws IOException {
-              //  JsonElement jsonElement = elementAdapter.read(jsonReader);
+                JsonElement jsonElement = elementAdapter.read(jsonReader);
 
-                JsonElement jsonElement = valuesOrElement(elementAdapter.read(jsonReader));
-
+               // JsonElement jsonElement = valuesOrElement(elementAdapter.read(jsonReader));
 
                 if (jsonElement.isJsonArray()) {
 
                     JsonArray jsonArray = jsonElement.getAsJsonArray();
-
-                    System.out.println("I am in with: "+jsonArray.toString());
+                  //  System.out.println("I am in with: "+jsonArray.toString());
 
                 }
-
+                if(jsonElement.isJsonObject()){
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                }
 
                 return delegate.fromJsonTree(jsonElement);
             }
@@ -48,13 +48,15 @@ public class TagsTypeAdapterFactory implements TypeAdapterFactory {
             }
         }.nullSafe();
     }
+   //NOT USED......
     private JsonElement valuesOrElement(JsonElement element) {
         if (!element.isJsonObject()) return element;
 
-        JsonObject obj = element.getAsJsonObject();
-        if (!hasJsonArrayKey("values", obj)) return element;
 
-        return obj.get("values");
+        JsonObject obj = element.getAsJsonObject();
+        if (!hasJsonArrayKey("participants", obj)) return element;
+
+        return obj.get("participants");
     }
 
     private boolean hasJsonArrayKey(String key, JsonObject json) {
