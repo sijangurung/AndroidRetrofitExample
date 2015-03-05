@@ -13,7 +13,7 @@ public class Item extends Model {
     @Column(name = "Name")
     public String name;
 
-    @Column(name = "Category")
+    @Column(name = "Category",index = true,onDelete = Column.ForeignKeyAction.CASCADE, onUpdate = Column.ForeignKeyAction.CASCADE)
     public Category category;
 
     public Item() {

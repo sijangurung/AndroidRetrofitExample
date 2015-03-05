@@ -11,6 +11,10 @@ import java.util.List;
  */
 @Table(name = "Categories")
 public class Category extends Model {
+
+    @Column(name="categoryId",index = true)
+    public Integer categoryId;
+
     @Column(name = "Name")
     public String name;
 

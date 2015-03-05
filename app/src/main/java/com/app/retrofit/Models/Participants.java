@@ -12,21 +12,30 @@ import java.util.List;
 /**
  * Created by djlophu on 02/03/15.
  */
-@Table(name = "Participants",id="_id")
+@Table(name = "Participants")
 public class Participants extends Model {
 
    //JUST FOR JSON to  POJO....
     @SerializedName("tags")
     public List<Integer> tags;
+    @SerializedName("scheduleItems")
+    public List<Integer> scheduleItems;
 
     public List<Integer> getTags() {
         return tags;
     }
-
     public void setTags(List<Integer> tags) {
         this.tags = tags;
     }
+    public List<Integer> getScheduleItems() {
+        return scheduleItems;
+    }
+    public void setScheduleItems(List<Integer> scheduleItems) {
+        this.scheduleItems = scheduleItems;
+    }
 
+    //tags relating to  participant to Tags....ParticipantsTags Class......
+    //scheduleItems to paricipants... ParticipantScheduleItems Class...
     @Expose
     @Column(name="firstName")
     public String firstName;
@@ -59,7 +68,7 @@ public class Participants extends Model {
     public String position;
 
     @SerializedName("id")
-    @Column(name="participantId")
+    @Column(name="participantId",unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public int participantId;
     @Expose
     @Column(name="updatedAt")
@@ -70,5 +79,100 @@ public class Participants extends Model {
         super();
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getLinkedIn() {
+        return linkedIn;
+    }
+
+    public void setLinkedIn(String linkedIn) {
+        this.linkedIn = linkedIn;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public int getParticipantId() {
+        return participantId;
+    }
+
+    public void setParticipantId(int participantId) {
+        this.participantId = participantId;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
 

@@ -1,4 +1,4 @@
-package com.app.retrofit;
+package com.app.retrofit.Adapters;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

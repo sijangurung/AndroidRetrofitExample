@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
-import com.app.retrofit.Models.Category;
-import com.app.retrofit.Models.Item;
+import com.app.retrofit.Adapters.TagsTypeAdapterFactory;
 import com.app.retrofit.Models.MainTable;
 import com.app.retrofit.Models.Participants;
 import com.app.retrofit.Models.Rooms;
 import com.app.retrofit.Models.Tags;
+import com.app.retrofit.Service.EventEyeService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -30,6 +31,7 @@ public class MainActivity extends Activity {
     public final String TAG ="MainActivity";
     public final String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46bWljcm9zb2Z0OndpbmRvd3MtYXp1cmU6enVtbyIsImF1ZCI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwibmJmIjoxNDI0OTc5NTQ0LCJleHAiOjE0Mjc1NzE1NDQsInVybjptaWNyb3NvZnQ6Y3JlZGVudGlhbHMiOiJ7fSIsInVpZCI6IjMsMyIsInZlciI6IjIifQ.YgQydkIxi3GgsR-w5FulV-Xff0IfIS15pBlet84hF3Y";
     TextView txtAll,txtStatus;
+    Button btnChange;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +39,9 @@ public class MainActivity extends Activity {
         txtAll = (TextView) findViewById(R.id.editTextAll);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
 
-        //new SyncDatabase().execute();
+        new SyncDatabase().execute();
 
-        Category restaurants = new Category();
-        restaurants.name = "Restaurants";
-
-        restaurants.save();
-
-        Item item = new Item();
-        item.category = restaurants;
-        item.name = "Outback Steakhouse";
-        item.save();
-
-        item = new Item();
-        item.category = restaurants;
-        item.name = "Red Robin";
-        item.save();
-
-        item = new Item();
-        item.category = restaurants;
-        item.name = "Olive Garden";
-        item.save();
+        ActiveAndroid.clearCache();
 
     }
 
@@ -112,15 +96,32 @@ public class MainActivity extends Activity {
                             }
                             txtAll.setText("ALL THE TAGS Saved..\n");
 
+                            ActiveAndroid.clearCache();
+
                             ArrayList<Participants> participantsObject = maintable.getParticipants();
                             for (int i = 0; i < participantsObject.size(); i++) {
                                       //This is going to DB..
                                 Participants participants = participantsObject.get(i);
                                            participants.save();
+
                                 //now for the relation part..
-                                maintable.saveParticipantTags(participantsObject.get(i).getTags(), participantsObject.get(i).participantId);
-                            }
+                                //GET ALL THE TAGS OBJECT...
+                                for(Integer tagid: participants.getTags()){
+                                    //Now i need to find out the tag with this id...
+                                    System.out.println(" Tagid:"+tagid+" --> ParticipantId: "+participants.getParticipantId());
+                                    for(Tags tags: tagsObject){
+                                        if(tags.getTagid() == tagid){
+                                            maintable.saveParticipantTags(tags, participants);
+                                        }
+                                    }
+                                }
+
+                            } //end of all participants.....
                             txtAll.setText(txtAll.getText() + "ALL THE Participants Saved.....\n");
+                            txtAll.setText(txtAll.getText() + "ALL THE ParticipantTags Relation Saved.....\n");
+
+
+                            ActiveAndroid.clearCache();
 
                             ArrayList<Rooms> roomObject = maintable.getRooms();
                             txtAll.setText(txtAll.getText() + "ALL THE Rooms ----> \n");

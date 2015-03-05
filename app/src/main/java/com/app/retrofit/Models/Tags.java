@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by djlophu on 02/03/15.
  */
-@Table(name = "Tags", id = "_id")
+@Table(name = "Tags")
 public class Tags extends Model {
 
 
@@ -33,5 +33,27 @@ public class Tags extends Model {
         //We have to call super in each constructor to create the table...
         super();}
 
+    public String getTitle() {
+        return title;
+    }
 
-   }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getTagid() {
+        return tagid;
+    }
+
+    public void setTagid(int tagid) {
+        this.tagid = tagid;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+}

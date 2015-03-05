@@ -1,4 +1,4 @@
-package com.app.retrofit; /**
+package com.app.retrofit.Service; /**
  * Created by djlophu on 02/03/15.
  */
 

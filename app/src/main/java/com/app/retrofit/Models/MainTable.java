@@ -1,9 +1,9 @@
 package com.app.retrofit.Models;
 
+import com.app.retrofit.Models.Relations.ParticipantsTags;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by djlophu on 02/03/15.
@@ -62,13 +62,13 @@ public class MainTable {
     }
 
 
-    public void saveParticipantTags(List<Integer> tags, int participantId) {
-        for(Integer tag: tags) {
+    public void saveParticipantTags(Tags tag , Participants participant) {
+
             ParticipantsTags ptObject = new ParticipantsTags();
-            ptObject.setTagId(tag);
-            ptObject.setParticipantId(participantId);
+            ptObject.tags=tag;
+            ptObject.participants=participant;
             ptObject.save();
-        }
+
 
     }
 }

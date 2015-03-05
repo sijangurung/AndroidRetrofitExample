@@ -1,4 +1,4 @@
-package com.app.retrofit;
+package com.app.retrofit.Application;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;
@@ -11,6 +11,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ActiveAndroid.initialize(this);
+
     }
 
     @Override

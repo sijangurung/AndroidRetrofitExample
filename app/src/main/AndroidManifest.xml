@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:name="com.app.retrofit.MyApplication"
+        android:name="com.app.retrofit.Application.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,7 +22,8 @@
         </activity>
 
         <meta-data android:name="AA_DB_NAME" android:value="eventeye_db.db" />
-       <!-- <meta-data android:name="AA_MODELS" android:value="com.app.retrofit.Models.Tags,com.app.retrofit.Models.Participants,com.app.retrofit.Models.Category,com.app.retrofit.Models.Item, com.app.retrofit.Models.ParticipantsTags" /> -->
+        <meta-data android:name="AA_MODELS"  android:value="," />
+
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
     </application>
 
