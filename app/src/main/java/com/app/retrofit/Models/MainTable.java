@@ -2,6 +2,10 @@ package com.app.retrofit.Models;
 
 import com.app.retrofit.Models.Relations.ParticipantScheduleItems;
 import com.app.retrofit.Models.Relations.ParticipantsTags;
+import com.app.retrofit.Models.Relations.RoomScheduleItems;
+import com.app.retrofit.Models.Relations.SessionRoom;
+import com.app.retrofit.Models.Relations.SessionSpeakers;
+import com.app.retrofit.Models.Relations.SessionTags;
 import com.app.retrofit.Models.Relations.SpeakerScheduleItems;
 import com.app.retrofit.Models.Relations.SpeakersTags;
 import com.google.gson.annotations.SerializedName;
@@ -79,12 +83,38 @@ public class MainTable {
         stObject.tags = tags;
         stObject.save();
     }
-
     public void saveSpeakerScheduleItems(Sessions sessions, Speakers speakers) {
         SpeakerScheduleItems stScItems = new SpeakerScheduleItems();
         stScItems.sessions = sessions;
         stScItems.speakers=speakers;
         stScItems.save();
 
+    }
+
+    public void saveRoomScheduleItems(Sessions sessions, Rooms rooms) {
+        RoomScheduleItems roomScItems = new RoomScheduleItems();
+        roomScItems.sessions = sessions;
+        roomScItems.rooms = rooms;
+        roomScItems.save();
+    }
+
+    public void saveSessionRoom(Sessions sessions, Rooms rooms) {
+        SessionRoom scRoom = new SessionRoom();
+        scRoom.sessions = sessions;
+        scRoom.rooms= rooms;
+        scRoom.save();
+    }
+    public void saveSessionTags(Sessions sessions,Tags tags) {
+        SessionTags stObject = new SessionTags();
+        stObject.sessions = sessions;
+        stObject.tags = tags;
+        stObject.save();
+    }
+
+    public void saveSessionSpeakers(Sessions sessions, Speakers speakers) {
+        SessionSpeakers scSpObject = new SessionSpeakers();
+        scSpObject.sessions = sessions;
+        scSpObject.speakers = speakers;
+        scSpObject.save();
     }
 }

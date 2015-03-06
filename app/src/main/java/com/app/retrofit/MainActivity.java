@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 
         ActiveAndroid.clearCache();
 
-        System.out.println("All said and done in peace!!!!!");
+
 
     }
 
@@ -124,7 +124,8 @@ public class MainActivity extends Activity {
                                 } //end of participantTags relations...
                                 //NOW FOR THE ParticipantScheduleItems.....
                                 for(Integer scheduleItems: participants.getScheduleItems()){
-                                    System.out.println(" scheduleItems:"+scheduleItems+" --> ParticipantId: "+participants.getParticipantId());
+                                    System.out.println(" ParticipantId: "+participants.getParticipantId()+"-->  scheduleItems:"+scheduleItems);
+                                    //Here we Save SESSIONS OBJECT...
                                     sessionsObject = maintable.getSessions();
                                     for(Sessions sessions: sessionsObject){
                                         sessions.save();
@@ -150,7 +151,7 @@ public class MainActivity extends Activity {
                                 //now for the relations part..
                                 for(Integer tagid: speakers.getTags()) {
                                     //Now i need to find out the tag with this id...
-                                    System.out.println(" Tagid:" + tagid + " --> SpeakerId: " + speakers.getSpeakerId());
+                                    System.out.println( "  SpeakerId: " + speakers.getSpeakerId()+" --> Tagid:" + tagid);
                                     for (Tags tags : tagsObject) {
                                         if (tags.getTagid() == tagid) {
                                             maintable.saveSpeakerTags(tags, speakers);
@@ -159,7 +160,7 @@ public class MainActivity extends Activity {
                                 } //end of SpeakerTags relations.....
                                 //NOW FOR THE SpeakerScheduleItemss.....
                                 for(Integer scheduleItems: speakers.getScheduleItems()){
-                                    System.out.println(" scheduleItems:"+scheduleItems+" --> SpeakersId: "+speakers.getSpeakerId());
+                                    System.out.println(" SpeakersId: "+speakers.getSpeakerId()+" --> scheduleItems:"+scheduleItems );
                                     sessionsObject = maintable.getSessions();
                                     for(Sessions sessions: sessionsObject){
                                         if(sessions.getSessionId() == scheduleItems){
@@ -174,19 +175,71 @@ public class MainActivity extends Activity {
                             txtAll.setText(txtAll.getText() + "ALL THE SpeakerTags Saved...\n");
                             txtAll.setText(txtAll.getText() + "ALL THE SpeakerScheduleItems Saved...\n");
 
-                            ArrayList<Rooms> roomObject = maintable.getRooms();
-                            txtAll.setText(txtAll.getText() + "ALL THE Rooms ----> \n");
-                            for (int i = 0; i < roomObject.size(); i++) {
+                            ActiveAndroid.clearCache();
 
+                            //Now for the Rooms..... We do it before Sessions because we have to use Room for sessionRoom...
+                            ArrayList<Rooms> roomObject = maintable.getRooms();
+                            for (Rooms rooms: roomObject) {
+                                System.out.println(" RoomId:"+rooms.getRoomId()+" saved... ");
+                                    rooms.save();
+                                //Now for RoomScheduleItems..
+                                for(Integer scheduleItems: rooms.getScheduleItems()){
+                                    System.out.println(" RoomId: "+rooms.getRoomId()+" --> scheduleItems:"+scheduleItems );
+                                    sessionsObject = maintable.getSessions();
+                                    for(Sessions sessions: sessionsObject){
+                                        if(sessions.getSessionId() == scheduleItems){
+                                            maintable.saveRoomScheduleItems(sessions,rooms);
+                                        }
+                                    }
+                                }
                             }
+
+                            txtAll.setText(txtAll.getText() + "ALL THE Rooms Saved... \n");
+                            txtAll.setText(txtAll.getText() + "ALL THE RoomsScheduleItems Saved... \n");
+
+                            ActiveAndroid.clearCache();
+
+                            //Now for the Sessions...Only the Relations..
+                            ArrayList<Sessions> sessionObject = maintable.getSessions();
+                            for(Sessions sessions: sessionObject){
+                                //We have already saved sessions.....on participants saving loop..
+
+                                //This is for SessionRoom Class.....
+                                System.out.println(" SessionId: "+sessions.getSessionId()+ " ---> RoomId:"+sessions.getRoomId());
+                                for(Rooms rooms: maintable.getRooms()){
+                                    if(sessions.getRoomId() == rooms.getRoomId()){
+                                            maintable.saveSessionRoom(sessions,rooms);
+                                    }
+                                }
+                                //This is for SessionTags Class....
+                                for(Integer tagId: sessions.getTags()) {
+                                    System.out.println(" SessionId: " + sessions.getSessionId() + " ---> TagsId:" + tagId);
+                                    for (Tags tags : maintable.getTags()) {
+                                        if(tags.getTagid() == tagId){
+                                            maintable.saveSessionTags(sessions,tags);
+                                        }
+                                    }
+                                }
+                                //This is for SessionSpeakers Class....
+                                for(Integer speakersId : sessions.getSpeakers()){
+                                    System.out.println(" SessionId: " + sessions.getSessionId() + " ---> speakersId:" + speakersId);
+                                    for(Speakers speakers: maintable.getSpeakers()){
+                                        if(speakers.getSpeakerId() == speakersId){
+                                            maintable.saveSessionSpeakers(sessions,speakers);
+                                        }
+                                    }
+                                }
+                            }//end of sessions......
+
+                            txtAll.setText(txtAll.getText() + "ALL THE SessionRoom Saved... \n");
+                            txtAll.setText(txtAll.getText() + "ALL THE SessionTags Saved... \n");
+                            txtAll.setText(txtAll.getText() + "ALL THE SessionSpeakers Saved... \n");
                             ActiveAndroid.setTransactionSuccessful();
                         }finally{
                             ActiveAndroid.endTransaction();
                         }
 
                     }//END of SUCCESS..
-
-
                     @Override
                     public void failure(RetrofitError retrofitError) {
                         Log.e(TAG,"error occurred!"+retrofitError);
