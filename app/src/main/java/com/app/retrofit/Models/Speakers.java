@@ -1,5 +1,6 @@
 package com.app.retrofit.Models;
 
+import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
@@ -11,7 +12,7 @@ import java.util.List;
  * Created by djlophu on 02/03/15.
  */
 @Table(name="Speakers")
-public class Speakers {
+public class Speakers extends Model {
     //Just for getting value from JSON to POJO...
     @SerializedName("tags")
     public List<Integer> tags;

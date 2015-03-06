@@ -12,6 +12,8 @@ import com.app.retrofit.Adapters.TagsTypeAdapterFactory;
 import com.app.retrofit.Models.MainTable;
 import com.app.retrofit.Models.Participants;
 import com.app.retrofit.Models.Rooms;
+import com.app.retrofit.Models.Sessions;
+import com.app.retrofit.Models.Speakers;
 import com.app.retrofit.Models.Tags;
 import com.app.retrofit.Service.EventEyeService;
 import com.google.gson.Gson;
@@ -35,13 +37,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         txtAll = (TextView) findViewById(R.id.editTextAll);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
 
         new SyncDatabase().execute();
 
         ActiveAndroid.clearCache();
+
+        System.out.println("All said and done in peace!!!!!");
 
     }
 
@@ -57,12 +61,12 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            txtStatus.setText("All data Loaded...");
+            txtStatus.setText("Data Loading Complete...");
         }
 
         @Override
         protected String doInBackground(String... params) {
-            // TODO Auto-generated method stub
+            //Working....
             try{
                 RequestInterceptor requestInterceptor = new RequestInterceptor() {
                     @Override
@@ -81,13 +85,16 @@ public class MainActivity extends Activity {
                         .setConverter(new GsonConverter(gson))
                         .setRequestInterceptor(requestInterceptor)
                         .build();
-                         EventEyeService eventService = restAdapter.create(EventEyeService.class);
+                EventEyeService eventService = restAdapter.create(EventEyeService.class);
 
                 eventService.getTags(null, new Callback<MainTable>() {
                     @Override
                     public void success(MainTable maintable, Response response) {
                         ActiveAndroid.beginTransaction();
                         try {
+                            //Universal Declaration so that other can use it.....
+                            ArrayList<Sessions> sessionsObject = new ArrayList<Sessions>();
+                            //THIS IS FOR THE TAGS.....
                             ArrayList<Tags> tagsObject = maintable.getTags();
                             for (int i = 0; i < tagsObject.size(); i++) {
                                 //This is going to DB...
@@ -98,14 +105,14 @@ public class MainActivity extends Activity {
 
                             ActiveAndroid.clearCache();
 
+                            //This is for the Participants ... also with ParticipantRelations.......
                             ArrayList<Participants> participantsObject = maintable.getParticipants();
-                            for (int i = 0; i < participantsObject.size(); i++) {
-                                      //This is going to DB..
-                                Participants participants = participantsObject.get(i);
-                                           participants.save();
+                            for (Participants participants: participantsObject) {
+                                //This is going to DB..
+                                participants.save();
 
                                 //now for the relation part..
-                                //GET ALL THE TAGS OBJECT...
+                                //Participants Tags Relations......
                                 for(Integer tagid: participants.getTags()){
                                     //Now i need to find out the tag with this id...
                                     System.out.println(" Tagid:"+tagid+" --> ParticipantId: "+participants.getParticipantId());
@@ -114,14 +121,58 @@ public class MainActivity extends Activity {
                                             maintable.saveParticipantTags(tags, participants);
                                         }
                                     }
+                                } //end of participantTags relations...
+                                //NOW FOR THE ParticipantScheduleItems.....
+                                for(Integer scheduleItems: participants.getScheduleItems()){
+                                    System.out.println(" scheduleItems:"+scheduleItems+" --> ParticipantId: "+participants.getParticipantId());
+                                    sessionsObject = maintable.getSessions();
+                                    for(Sessions sessions: sessionsObject){
+                                        sessions.save();
+                                        if(sessions.getSessionId() == scheduleItems){
+                                            maintable.saveParticipantScheduleItems(sessions, participants);
+                                        }
+                                    }
+
                                 }
 
                             } //end of all participants.....
                             txtAll.setText(txtAll.getText() + "ALL THE Participants Saved.....\n");
                             txtAll.setText(txtAll.getText() + "ALL THE ParticipantTags Relation Saved.....\n");
-
+                            txtAll.setText(txtAll.getText() + "ALL THE ParticipantScheduleItems Relation Saved.....\n");
 
                             ActiveAndroid.clearCache();
+
+                            //NOW for the Speakers....
+                            ArrayList<Speakers> speakersObject = maintable.getSpeakers();
+                            for(Speakers speakers: speakersObject){
+                                speakers.save(); //Speakers table in database...
+
+                                //now for the relations part..
+                                for(Integer tagid: speakers.getTags()) {
+                                    //Now i need to find out the tag with this id...
+                                    System.out.println(" Tagid:" + tagid + " --> SpeakerId: " + speakers.getSpeakerId());
+                                    for (Tags tags : tagsObject) {
+                                        if (tags.getTagid() == tagid) {
+                                            maintable.saveSpeakerTags(tags, speakers);
+                                        }
+                                    }
+                                } //end of SpeakerTags relations.....
+                                //NOW FOR THE SpeakerScheduleItemss.....
+                                for(Integer scheduleItems: speakers.getScheduleItems()){
+                                    System.out.println(" scheduleItems:"+scheduleItems+" --> SpeakersId: "+speakers.getSpeakerId());
+                                    sessionsObject = maintable.getSessions();
+                                    for(Sessions sessions: sessionsObject){
+                                        if(sessions.getSessionId() == scheduleItems){
+                                            maintable.saveSpeakerScheduleItems(sessions, speakers);
+                                        }
+                                    }
+
+                                }//end of speakersScheduleItems relations.......
+
+                            } //end of Speakers..
+                            txtAll.setText(txtAll.getText() + "ALL THE Speakers Saved...\n");
+                            txtAll.setText(txtAll.getText() + "ALL THE SpeakerTags Saved...\n");
+                            txtAll.setText(txtAll.getText() + "ALL THE SpeakerScheduleItems Saved...\n");
 
                             ArrayList<Rooms> roomObject = maintable.getRooms();
                             txtAll.setText(txtAll.getText() + "ALL THE Rooms ----> \n");

@@ -1,42 +1,51 @@
 package com.app.retrofit.Models;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by djlophu on 02/03/15.
  */
+@Table(name="Rooms")
+public class Rooms extends Model {
 
-public class Rooms {
+    //This is just for JSON to POJO-.....
     @SerializedName("scheduleItems")
-    public ArrayList<String> scheduleItems;
-    @SerializedName("title")
-    public String title;
-    @SerializedName("colorCode")
-    public String colorCode;
-    @SerializedName("eventId")
-    public int eventId;
-    @SerializedName("id")
-    public int id;
-    @SerializedName("updatedAt")
-    public String updatedAt;
+    public List<Integer> scheduleItems;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public ArrayList<String> getScheduleItems() {
+    public List<Integer> getScheduleItems() {
         return scheduleItems;
     }
-
-    public void setScheduleItems(ArrayList<String> scheduleItems) {
+    public void setScheduleItems(List<Integer> scheduleItems) {
         this.scheduleItems = scheduleItems;
     }
+
+    //scheduleItems.... relations by RoomScheduleItems Class.....
+
+    @Expose
+    @Column(name="title")
+    public String title;
+    @Expose
+    @Column(name="colorCode")
+    public String colorCode;
+    @Expose
+    @Column(name="eventId")
+    public int eventId;
+
+    @SerializedName("id")
+    @Column(name="roomId",unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    public int roomId;
+
+    @Expose
+    @Column(name="updatedAt")
+    public String updatedAt;
+
+    public Rooms(){super();} //For Database.....
 
     public String getTitle() {
         return title;
@@ -60,6 +69,14 @@ public class Rooms {
 
     public void setEventId(int eventId) {
         this.eventId = eventId;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
     public String getUpdatedAt() {
